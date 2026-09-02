@@ -1,0 +1,12 @@
+FROM python:3.13-slim
+
+WORKDIR /app
+COPY AutoZen_Prospect_Intelligence_v1.2.6_build_20260901_09.zip /tmp/autozen.zip
+RUN python -m zipfile -e /tmp/autozen.zip /app \
+    && pip install --no-cache-dir .
+
+ENV PYTHONUNBUFFERED=1
+ENV PORT=10000
+EXPOSE 10000
+
+CMD ["python", "-m", "scripts.run_autozen_server"]
