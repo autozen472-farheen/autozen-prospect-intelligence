@@ -1,0 +1,14 @@
+FROM python:3.12-slim
+WORKDIR /app
+COPY AutoZen_Prospect_Intelligence_v1.3.1_build_20260902_03.zip /tmp/autozen-release.zip
+RUN python -m zipfile -e /tmp/autozen-release.zip /app \
+    && pip install --no-cache-dir -r requirements.lock \
+    && python -m pytest \
+    && useradd --uid 10001 --create-home engine
+ENV DATA_MODE=mock APP_ENVIRONMENT=demo NARRATIVE_MODE=template
+ENV ENABLE_LIVE_RUNS=false DAILY_LIVE_RUN_LIMIT=1
+ENV DATABASE_PATH=/tmp/autozen-prospect-intelligence.db
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+USER engine
+EXPOSE 8080
+CMD ["python", "-m", "scripts.run_autozen_server"]
